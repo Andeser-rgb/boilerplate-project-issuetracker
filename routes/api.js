@@ -136,8 +136,8 @@ module.exports = function (app) {
                 projectData.issues = projectData.issues.filter(d => d._id != _id);
                 projectData.save((err, data) => {
                     res.json(err || !data
-                             ? {error: "could not update", _id: _id}
-                             : {result: 'successfully updated', _id: _id}
+                             ? {error: "could not delete", _id: _id}
+                             : {result: 'successfully deleted', _id: _id}
                             );
                 });
             });
