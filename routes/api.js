@@ -88,7 +88,7 @@ module.exports = function (app) {
                         issueData.status_text = status_text || issueData.status_text;
                         issueData.open = open || issueData.open;
                         issueData.updated_on = new Date();
-                        ProjectModel.save((err, data) => {
+                        projectData.save((err, data) => {
                             if(err || !data) res.json({error: "could not update", _id: _id});
                             else res.json({result: "Successfuly updated", _id: _id});
                         });
