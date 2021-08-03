@@ -29,12 +29,13 @@ module.exports = function (app) {
             } = req.body;
             if(!issue_title || !issue_text || !created_by){
                 res.json({error: 'required field(s) missing'});
+                return;
             }
 
             const newIssue = new IssueModel({
-                issue_title: issue_title,
-                issue_text: issue_text,
-                created_by: created_by,
+                issue_title: issue_title || '',
+                issue_text: issue_text || '',
+                created_by: created_by || '',
                 created_on: new Date(),
                 updated_on: new Date(),
                 assigned_to: assigned_to || '',
@@ -45,20 +46,20 @@ module.exports = function (app) {
                 if(!projectData){
                     const newProject = new ProjectModel({
                         name: project,
-                        issues: [newIssue]
                     });
+                    newProject.issues.push(newIssue);
                     newProject.save((err, data) => {
-                        err || !data
-                            ? res.send("There was an error saving in post")
-                            : res.json(data);
+                        res.json(err || !data
+                                 ? {error: "There was an error saving in post"}
+                                 : data);
                     });
                 }
                 else{
                     projectData.issues.push(newIssue);
                     projectData.save((err, data) => {
-                        err || !data
-                            ? res.send("There was an error saving in post")
-                            : res.json(data);
+                        res.json(err || !data
+                                 ? {error: "There was an error saving in post"}
+                                 : data);
                     });
                 }
             });
