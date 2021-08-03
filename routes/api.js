@@ -77,7 +77,10 @@ module.exports = function (app) {
                 status_text,
                 open
             } = req.body;
-            if(!_id) res.json({error: "missing _id"});
+            if(!_id) {
+                res.json({error: "missing _id"});
+                return;
+            }
             if(!issue_title &&
                !issue_text &&
                !created_by &&
@@ -95,7 +98,10 @@ module.exports = function (app) {
                 }
                 else{
                     const issueData = projectData.issues.id(_id);
-                    if(!issueData) res.json({error: "could not update", _id: _id});
+                    if(!issueData) {
+                        res.json({error: "could not update", _id: _id});
+                        return;
+                    }
                     else{
                         issueData.issue_title = issue_title || issueData.issue_title;
                         issueData.issue_text = issue_text || issueData.issue_text;
@@ -106,8 +112,10 @@ module.exports = function (app) {
                         issueData.updated_on = new Date();
                         console.log(issueData);
                         projectData.save((err, data) => {
-                            if(err || !data) res.json({error: "could not update", _id: _id});
-                            else res.json({result: 'successfully updated', '_id': _id });
+                            res.json(err || !data
+                                     ? {error: "could not update", _id: _id}
+                                     : {result: 'successfully updated', _id: _id}
+                                    );
                         });
                     }
                 }
