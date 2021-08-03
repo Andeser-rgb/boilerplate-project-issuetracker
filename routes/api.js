@@ -14,7 +14,13 @@ module.exports = function (app) {
                 }
                 else{
                     const filterEntries = Object.entries(req.query);
-                    res.json(projectData.issues.filter(d => filterEntries.every(([key, value]) => d[key] === value)));
+                    res.json(projectData.issues.filter(d =>
+                        filterEntries.every(([key, value]) =>
+                            key === '_id'
+                                ? d[key] === mongoose.ObjectId(value)
+                                : d[key] === value
+                        )
+                    ));
                 }
             });
         })
@@ -75,7 +81,7 @@ module.exports = function (app) {
                 created_by,
                 assigned_to,
                 status_text,
-                open
+                open,
             } = req.body;
             if(!_id) {
                 res.json({error: "missing _id"});
