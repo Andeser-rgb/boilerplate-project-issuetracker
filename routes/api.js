@@ -102,8 +102,9 @@ module.exports = function (app) {
                         issueData.created_by = created_by || issueData.created_by;
                         issueData.assigned_to = assigned_to || issueData.assigned_to;
                         issueData.status_text = status_text || issueData.status_text;
-                        issueData.open = open;
+                        issueData.open = open || issueData.open;
                         issueData.updated_on = new Date();
+                        console.log(issueData);
                         projectData.save((err, data) => {
                             if(err || !data) res.json({error: "could not update", _id: _id});
                             else res.json({result: 'successfully updated', '_id': _id });
