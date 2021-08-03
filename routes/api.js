@@ -127,5 +127,19 @@ module.exports = function (app) {
         })
         .delete(function (req, res){
             let project = req.params.project;
+            const _id = req.body._id;
+            if(!_id){
+                res.json({error: "missing _id"});
+                return;
+            }
+            ProjectModel.findOne({name: project}, (err, projectData) => {
+                projectData.issues = projectData.issues.filter(d => d._id != _id);
+                projectData.save((err, data) => {
+                    res.json(err || !data
+                             ? {error: "could not update", _id: _id}
+                             : {result: 'successfully updated', _id: _id}
+                            );
+                });
+            });
         });
 };
