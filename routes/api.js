@@ -82,7 +82,8 @@ module.exports = function (app) {
                !issue_text &&
                !created_by &&
                !assigned_to &&
-               !status_text
+               !status_text &&
+               !open
               ) {
                 res.json({error: "no update filed(s) sent"});
                 return;
