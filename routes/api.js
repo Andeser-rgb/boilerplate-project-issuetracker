@@ -92,7 +92,7 @@ module.exports = function (app) {
                !status_text &&
                !open
               ) {
-                res.json({error: "no update field(s) sent"});
+                res.json({error: "no update field(s) sent", _id: _id});
                 return;
             }
             ProjectModel.findOne({name: project}, (err, projectData) => {
