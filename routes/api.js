@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const IssueModel = require('../models').Issue;
 const ProjectModel = require('../models').Project;
+const ObjectId = mongoose.Types.ObjectId;
 
 module.exports = function (app) {
 
@@ -15,10 +16,7 @@ module.exports = function (app) {
                 else{
                     const filterEntries = Object.entries(req.query);
                     res.json(projectData.issues.filter(d =>
-                        filterEntries.every(([key, value]) =>
-                            key === '_id'
-                                ? d[key] === mongoose.ObjectId(value)
-                                : d[key] === value
+                        filterEntries.every(([key, value]) => d[key] == value
                         )
                     ));
                 }
@@ -94,7 +92,7 @@ module.exports = function (app) {
                !status_text &&
                !open
               ) {
-                res.json({error: "no update filed(s) sent"});
+                res.json({error: "no update field(s) sent"});
                 return;
             }
             ProjectModel.findOne({name: project}, (err, projectData) => {
