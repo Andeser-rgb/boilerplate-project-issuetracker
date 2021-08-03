@@ -27,11 +27,6 @@ module.exports = function (app) {
                 assigned_to,
                 status_text
             } = req.body;
-            console.log(issue_title);
-            console.log(issue_text);
-            console.log(created_by);
-            console.log(assigned_to);
-            console.log(status_text);
 
             if(!issue_title || !issue_text || !created_by){
                 res.json({error: 'required field(s) missing'});
@@ -57,7 +52,7 @@ module.exports = function (app) {
                     newProject.save((err, data) => {
                         res.json(err || !data
                                  ? {error: "There was an error saving in post"}
-                                 : data);
+                                 : newIssue);
                     });
                 }
                 else{
@@ -65,7 +60,7 @@ module.exports = function (app) {
                     projectData.save((err, data) => {
                         res.json(err || !data
                                  ? {error: "There was an error saving in post"}
-                                 : data);
+                                 : newIssue);
                     });
                 }
             });
@@ -82,11 +77,18 @@ module.exports = function (app) {
                 status_text,
                 open
             } = req.body;
+            if(!_id) res.json({error: "missing _id"});
+            if(!issue_title &&
+               !issue_text &&
+               !created_by &&
+               !assigned_to &&
+               !status_text &&
+               !open) res.json({error: "no update filed(s) sent"});
             ProjectModel.findOne({name: project}, (err, projectData) => {
-                if(!projectData) res.send("Project not found");
+                if(!projectData) res.json({error: "could not update", _id: _id});
                 else{
                     const issueData = projectData.issues.id(_id);
-                    if(!issueData) res.send("Id not found");
+                    if(!issueData) res.json({error: "could not update", _id: _id});
                     else{
                         issueData.issue_title = issue_title || issueData.issue_title;
                         issueData.issue_text = issue_text || issueData.issue_text;
@@ -97,7 +99,7 @@ module.exports = function (app) {
                         issueData.updated_on = new Date();
                         projectData.save((err, data) => {
                             if(err || !data) res.json({error: "could not update", _id: _id});
-                            else res.json({result: "Successfuly updated", _id: _id});
+                            else res.json({result: "successfully updated", _id: _id});
                         });
                     }
                 }
