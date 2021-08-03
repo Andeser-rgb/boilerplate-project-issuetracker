@@ -20,7 +20,6 @@ module.exports = function (app) {
         })
         .post(function (req, res){
             let project = req.params.project;
-            /*
             const {
                 issue_title,
                 issue_text,
@@ -28,12 +27,12 @@ module.exports = function (app) {
                 assigned_to,
                 status_text
             } = req.body;
-            */
-            const issue_title = req.body.issue_title;
-            const issue_text = req.body.issue_text;
-            const created_by = req.body.created_by;
-            const assigned_to = req.body.assigned_to;
-            const status_text = req.body.status_text;
+            console.log(issue_title);
+            console.log(issue_text);
+            console.log(created_by);
+            console.log(assigned_to);
+            console.log(status_text);
+
             if(!issue_title || !issue_text || !created_by){
                 res.json({error: 'required field(s) missing'});
                 return;
