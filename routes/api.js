@@ -72,17 +72,27 @@ module.exports = function (app) {
                 issue_text,
                 created_by,
                 assigned_to,
-                status_text
+                status_text,
+                open
             } = req.body;
             ProjectModel.findOne({name: project}, (err, projectData) => {
                 if(!projectData) res.send("Project not found");
                 else{
-                    ProjectModel.aggregate([
-                        {$match: {name: project}},
-                        {$unwind: $issues},
-                        _id != undefined
-                        ? 
-                    ]);
+                    const issueData = projectData.issues.id(_id);
+                    if(!issueData) res.send("Id not found");
+                    else{
+                        issueData.issue_title = issue_title || issueData.issue_title;
+                        issueData.issue_text = issue_text || issueData.issue_text;
+                        issueData.created_by = created_by || issueData.created_by;
+                        issueData.assigned_to = assigned_to || issueData.assigned_to;
+                        issueData.status_text = status_text || issueData.status_text;
+                        issueData.open = open || issueData.open;
+                        issueData.updated_on = new Date();
+                        ProjectModel.save((err, data) => {
+                            if(err || !data) res.json({error: "could not update", _id: _id});
+                            else res.json({result: "Successfuly updated", _id: _id});
+                        });
+                    }
                 }
             });
         })
